@@ -107,7 +107,7 @@ Part I of this [SIGGRAPH Course](http://www.femdefo.org), by Eftychios Sifakis a
 
 ## The Finite Element method
 
-The idea of the finite element method is to represent quantities inside a volume of space using a set of scalar *basis* functions $\phi_i\left(\mathbf{x})\right$ where $\mathbf{x}\in\mathcal{R}^3$ is a point inside the space volume. We then represent any quantity inside the volume as a linear combination of these basis functions:
+The idea of the finite element method is to represent quantities inside a volume of space using a set of scalar *basis* or *shape* functions $\phi_i\left(\mathbf{x})\right$ where $\mathbf{x}\in\mathcal{R}^3$ is a point inside the space volume. We then represent any quantity inside the volume as a linear combination of these basis functions:
 
 $$f\left(\mathbf{x}\right)=\sum_{i=0}^{b-1}w_i\phi_i\left(\mathbf{x}\right)$$
 
@@ -249,16 +249,45 @@ $$M\dot{\mathbf{q}}^{t+1} = M\dot{\mathbf{q}}^{t} + \Delta t \mathbf{f}\left(\ma
 The position of the mesh is updated using $\mathbf{q}^{t} + \Delta t \dot{\mathbf{q}}^{t+1}$. 
 
 To solve for $\dot{\mathbf{q}}^{t+1}$ it is useful to notice that solving the update equation above is equivalent to the [optimization problem](https://www.google.com/search?client=safari&rls=en&q=Geometric+Numerical+Integration+Hairer&ie=UTF-8&oe=UTF-8)
-$$ \dot{\mathbf{q}}^{t+1}=\arg\min_{\dot{\mathbf{q}}} \frac{1}{2}\left(\dot{\mathbf{q}}-\dot{\mathbf{q}}^t\right)^TM\left(\dot{\mathbf{q}}-\dot{\mathbf{q}}^t\right) - V\left(\mathbf{q}^t + \Delta t\dot{\mathbf{q}}\right)$$
+$$ \dot{\mathbf{q}}^{t+1}=\arg\min_{\dot{\mathbf{q}}} \frac{1}{2}\left(\dot{\mathbf{q}}-\dot{\mathbf{q}}^t\right)^TM\left(\dot{\mathbf{q}}-\dot{\mathbf{q}}^t\right) + V\left(\mathbf{q}^t + \Delta t\dot{\mathbf{q}}\right)$$
 
-We are going to solve this minimization problem using newton's method. 
+We are going to solve this minimization problem using Newton's method. 
 
 ### Newton's method
 
+[Newton's method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization) computes the local minimum of an objective function by solving a sequence of quadratic minimizations. We start with the current state of our object ($\mathbf{q}^t$ and $\dot{\mathbf{q}}^t$) and our goal is to compute $\dot{\mathbf{q}}^{t+1} =  \dot{\mathbf{q}}^{t} + \Delta \dot{\mathbf{q}}$
+
+Let's define the variable $\bar{\mathbf{q}} = \mathbf{q}^{t} + \Delta \dot{\mathbf{q}}^{t}$. We can Taylor expand our objective around this point, giving us
+
+$$\Delta \dot{\mathbf{q}}^* = \arg\min_{\Delta \dot{\mathbf{q}}} \frac{1}{2}\Delta \dot{\mathbf{q}}^TM\Delta \dot{\mathbf{q}} - \Delta \dot{\mathbf{q}}^TM\dot{\mathbf{q}}^t  - \frac{1}{2}\Delta t^2 \Delta \dot{\mathbf{q}}^TK\left(\bar{\mathbf{q}}\right)\Delta \dot{\mathbf{q}} - \Delta t\Delta \dot{\mathbf{q}}^T\mathbf{f}_\left(\bar{\mathbf{q}}\right)$$ 
+
+The solution to this minimization problem is found by solving
+
+$$H\Delta \dot{\mathbf{q}} = -\mathbf{g}$$
+
+where $H$ is the Hessian of the above quadratic objective, and $\mathbf{g}$ is the gradient. 
+
+Newton's method repeatedly computes $\Delta \dot{\mathbf{q}}$, using it to update both $\mathbf{q}$ and $\dot{\mathbf{q}}$, until it either reaches some maximum number of iterations or finds the point for which the gradient of the full cost function is very close to zero. 
 
 ### Line Search
 
+Unfortunately the $\Delta \dot{\mathbf{q}}$ computed by Newton's method can be overly ambitious causing the algorithm to never find a local minimum. To avoid this problem, robust optimization schemes give themselves the option of taking a fractional newton's step. One simple way to find a good step size is to use [backtracking line search](https://en.wikipedia.org/wiki/Backtracking_line_search). Line search is so named because it searches in the *direction* computed by Newton's method (along the line) but looks for a value of the full energy function that guarantees, for instance, sufficient decrease.  Backtracking line search gets its name because it initially tries to take a full Newton Step, and if that step is flawed, divides the step by some ratio and then checks the result of this new step. This procedure is repeated until either a suitable step is found, or the step length being checked goes to zero. 
+        
 ## High Resolution Display Mesh via Skinning
+
+The final component of this assignment involves making our FEM simulation look a bit more appealing. FEM calculations can be slow, especially if we want real-time performance. This often limits us to the use of relatively low resolution simulation meshes. To compensate for this we can adopt the concept of skinning from computer animation. 
+
+Let us define two different meshes. The first is our simulation tetrahedral mesh with vertex positions given by $\mathbf{q}^{t}$. The second is going to be a higher resolution triangle mesh, for display purposes. We will assume that our display mesh is completely enclosed by the simulation mesh when then simulation mesh is undeformed. 
+
+Our goal is to transfer the motion of the simulation mesh to the display mesh. Remember that the FEM discretization defines the motion of our object, not just at the vertices, but everywhere inside the mesh (via the basis functions). Specifically, for any point in the undeformed space $\mathbf{X}$ I can reconstruct the deformed position $\mathbf{x}^t\left(\mathbf{X}\right)$ as long as I know which tetrahedron contains $\mathbf{X}$. 
+
+This gives us a simply algorithm to deform our display mesh. For each vertex in the display mesh ($\mathbf{X}_j$), find the tetrahedron, $e$, that contains $\mathbf{X}_j$ then move that vertex to position $N_e\mathbf{q}_e$. Here $N_e$ and $\mathbf{q}_e$ are the basis function and generalized coordinates for the containing tetrahedron. 
+
+This can be expresses as a linear operation 
+
+$$\mathbf{x}^t_\mbox{display} = W\mathbf{q}^{t} $$ 
+
+where $\mathbf{x}_\mbox{display}$ are the deformed vertex positions of the display mesh and $W$ is the *skinning matrix* which contains the appropriate basis function values. 
 
 ## Assignment Implementation 
 
