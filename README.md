@@ -105,9 +105,11 @@ FEM has two main advantages over mass-spring systems. First, the behaviour of th
 
 Part I of this [SIGGRAPH Course](http://www.femdefo.org), by Eftychios Sifakis and Jernej Barbic, is an excellent source of additional information and insight, beyond what you will find below. 
 
+![Armadillo simulated via Finite Element Elasticity](images/armadillo.gif)
+
 ## The Finite Element method
 
-The idea of the finite element method is to represent quantities inside a volume of space using a set of scalar *basis* or *shape* functions $\phi_i\left(\mathbf{x})\right$ where $\mathbf{x}\in\mathcal{R}^3$ is a point inside the space volume. We then represent any quantity inside the volume as a linear combination of these basis functions:
+The idea of the finite element method is to represent quantities inside a volume of space using a set of scalar *basis* or *shape* functions $\phi_i\left(\mathbf{x}\right)$ where $\mathbf{x}\in\mathcal{R}^3$ is a point inside the space volume. We then represent any quantity inside the volume as a linear combination of these basis functions:
 
 $$f\left(\mathbf{x}\right)=\sum_{i=0}^{b-1}w_i\phi_i\left(\mathbf{x}\right)$$
 
