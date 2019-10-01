@@ -359,7 +359,12 @@ inline void assignment_setup(int argc, char **argv, Eigen::VectorXd &q, Eigen::V
 
     //Mass Matrix
     mass_matrix_mesh(M, qdot, T, density, v0);
-
+    
+    if(M.rows() == 0) {
+        std::cout<<"Mass Matrix not implemented, quitting \n";
+        std::exit(0);
+    }
+    
     //setup constraint matrix
     if(bunny)
         find_min_vertices(fixed_point_indices, V, 3);
