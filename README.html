@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="css/github-markdown.css" />
+  <style>
+    .markdown-body {
+        box-sizing: border-box;
+        min-width: 200px;
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+        .markdown-body {
+            padding: 15px;
+        }
+    }
+</style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<article class="markdown-body">
+<h2 id="introduction">Introduction</h2>
+<p>The third assignment will introduce you to the most common numerical method for simulating, well, almost anything in Computer Graphics, the mighty Finite Element Method.</p>
+<h3 id="prerequisite-installation">Prerequisite installation</h3>
+<p>On all platforms, we will assume you have installed cmake and a modern c++ compiler on Mac OS X<a href="#¹macusers">¹</a>, Linux<a href="#²linuxusers">²</a>, or Windows<a href="#³windowsusers">³</a>.</p>
+<p>We also assume that you have cloned this repository using the <code>--recursive</code> flag (if not then issue <code>git submodule update --init --recursive</code>).</p>
+<p><strong>Note:</strong> We only officially support these assignments on Ubuntu Linux 18.04 (the OS the teaching labs are running) and OSX 10.13 (the OS I use on my personal laptop). While they <em>should</em> work on other operating systems, we make no guarantees.</p>
+<p><strong>All grading of assignments is done on Linux 18.04</strong></p>
+<h3 id="layout">Layout</h3>
+<p>All assignments will have a similar directory and file layout:</p>
+<pre><code>README.md
+CMakeLists.txt
+main.cpp
+assignment_setup.h
+include/
+  function1.h
+  function2.h
+  ...
+src/
+  function1.cpp
+  function2.cpp
+  ...
+data/
+  ...
+...</code></pre>
+<p>The <code>README.md</code> file will describe the background, contents and tasks of the assignment.</p>
+<p>The <code>CMakeLists.txt</code> file setups up the cmake build routine for this assignment.</p>
+<p>The <code>main.cpp</code> file will include the headers in the <code>include/</code> directory and link to the functions compiled in the <code>src/</code> directory. This file contains the <code>main</code> function that is executed when the program is run from the command line.</p>
+<p>The <code>include/</code> directory contains one file for each function that you will implement as part of the assignment.</p>
+<p>The <code>src/</code> directory contains <em>empty implementations</em> of the functions specified in the <code>include/</code> directory. This is where you will implement the parts of the assignment.</p>
+<p>The <code>data/</code> directory contains <em>sample</em> input data for your program. Keep in mind you should create your own test data to verify your program as you write it. It is not necessarily sufficient that your program <em>only</em> works on the given sample data.</p>
+<h2 id="compilation-for-debugging">Compilation for Debugging</h2>
+<p>This and all following assignments will follow a typical cmake/make build routine. Starting in this directory, issue:</p>
+<pre><code>mkdir build
+cd build
+cmake ..</code></pre>
+<p>If you are using Mac or Linux, then issue:</p>
+<pre><code>make</code></pre>
+<h2 id="compilation-for-testing">Compilation for Testing</h2>
+<p>Compiling the code in the above manner will yield working, but very slow executables. To run the code at full speed, you should compile it in release mode. Starting in the <strong>build directory</strong>, do the following:</p>
+<pre><code>cmake .. -DCMAKE_BUILD_TYPE=Release</code></pre>
+<p>Followed by:</p>
+<pre><code>make </code></pre>
+<p>Your code should now run significantly (sometimes as much as ten times) faster.</p>
+<p>If you are using Windows, then running <code>cmake ..</code> should have created a Visual Studio solution file called <code>a3-finite-elements-3d.sln</code> that you can open and build from there. Building the project will generate an .exe file.</p>
+<p>Why don’t you try this right now?</p>
+<h2 id="execution">Execution</h2>
+<p>Once built, you can execute the assignment from inside the <code>build/</code> using</p>
+<pre><code>./a3-finite-elements-3d</code></pre>
+<h2 id="background">Background</h2>
+<p>In this assignment you will get a chance to implement one of the gold-standard methods for simulating elastic objects – the finite element method (FEM). Unlike the particles in the previous <a href="https://github.com/dilevin/CSC2549-a2-mass-spring-3d">assignment</a>, the finite-element method allows us compute the motion of continuous volumes of material. This is enabled by assuming that the motion of a small region can be well approximated by a simple function space. Using this assumption we will see how to generate and solve the equations of motion.</p>
+<p>FEM has wonderfully practical origins, it was created by engineers to study <a href="https://en.wikipedia.org/wiki/Finite_element_method">complex aerodynamical and elastic problems</a> in the 1940s. My MSc supervisor used to regale me with stories of solving finite element equations by hand on a chalkboard. With the advent of modern computers, its use as skyrocketed.</p>
+<p>FEM has two main advantages over mass-spring systems. First, the behaviour of the simulated object is less dependent on the topology of the simulation mesh. Second, unlike the single stiffness parameter afforded by mass spring systems, FEM allows us to use a richer class of material models that better represent real-world materials.</p>
+<h2 id="resources">Resources</h2>
+<p>Part I of this <a href="http://www.femdefo.org">SIGGRAPH Course</a>, by Eftychios Sifakis and Jernej Barbic, is an excellent source of additional information and insight, beyond what you will find below.</p>
+<figure>
+<img src="images/armadillo.gif" alt="" /><figcaption>Armadillo simulated via Finite Element Elasticity</figcaption>
+</figure>
+<h2 id="the-finite-element-method">The Finite Element method</h2>
+<p>The idea of the finite element method is to represent quantities inside a volume of space using a set of scalar <em>basis</em> or <em>shape</em> functions <span class="math inline">\(\phi_i\left(\mathbf{x}\right)\)</span> where <span class="math inline">\(\mathbf{x}\in\mathcal{R}^3\)</span> is a point inside the space volume. We then represent any quantity inside the volume as a linear combination of these basis functions:</p>
+<p><span class="math display">\[f\left(\mathbf{x}\right)=\sum_{i=0}^{b-1}w_i\phi_i\left(\mathbf{x}\right)\]</span></p>
+<p>where <span class="math inline">\(w_i\)</span> are weighting coefficients. Designing a finite element method involves making a judicious choice of basis functions such that we can compute the <span class="math inline">\(w_i\)</span>’s efficiently. Spoiler Alert: n the case of elastodynamics, these <span class="math inline">\(w_i\)</span>’s will become our generalized coordinates and will be computed via time integration.</p>
+<h2 id="our-geometric-primitive-the-tetrahedron">Our Geometric Primitive: The Tetrahedron</h2>
+<p>For this assignment we will use a <a href="https://en.wikipedia.org/wiki/Tetrahedron">tetrahedron</a> as the basic space volume. The reason we work with tetrahedra is two-fold. First, as you will see very soon, they allow us to easily define a simple function space over the volume. Second, there is available <a href="https://github.com/Yixin-Hu/TetWild">software</a> to convert arbitrary triangle meshes into tetrahedral meshes.</p>
+<figure>
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Tetrahedron.jpg" alt="" /><figcaption>A Tetrahedron</figcaption>
+</figure>
+<h2 id="a-piecewise-linear-function-space">A Piecewise-Linear Function Space</h2>
+<p>Now we are getting down to the nitty-<a href="https://en.wikipedia.org/wiki/Gritty_(mascot)">gritty</a> – we are going to define our basis functions. The simplest, useful basis functions we can choose are linear basis functions, so our goal is to define linear functions inside of a tetrahedron. Fortunately such nice basis functions already exist! They are the <a href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system">barycentric coordinates</a>. For a tetrahedron there are four (4) barycentric coordinates, one associated with each vertex. We will choose <span class="math inline">\(\phi_i\)</span> to be the <span class="math inline">\(i^{th}\)</span> barycentric coordinate.</p>
+<p>Aside from being linear, barycentric coordinates have another desireable property, called the <em><a href="https://en.wikipedia.org/wiki/Kronecker_delta">Kronecker delta</a> property</em> (or fancy Identity matrix as I like to think of it). This is a fancy-pants way of saying that the <span class="math inline">\(i^th\)</span> barycentric coordinate is zero (0) when evaluated at any vertex, <span class="math inline">\(j\)</span>, of the tetrahedron, <span class="math inline">\(j \neq i\)</span>, and one (1) when evaluated at <span class="math inline">\(j = i\)</span>. What’s the practical implication of this? Well it means that if I knew my function <span class="math inline">\(f\left(x\right)\)</span>, then the best values for my <span class="math inline">\(w_i\)</span>’s would be <span class="math inline">\(f\left(\mathbf{x}_i\right)\)</span>, or the value of <span class="math inline">\(f\)</span> evaluated at each vertex of my tetrahedron.</p>
+<p>All of this means that a reasonable way to approximate any function in our tetrahedron is to use</p>
+<p><span class="math display">\[ f\left(\mathbf{x}\right)=\sum_{i=0}^{3}f_i\phi_i\left(\mathbf{x}\right) \]</span></p>
+<p>where <span class="math inline">\(\phi\left(\mathbf{x}\right)\)</span> are now the tetrahedron barycentric coordinates and <span class="math inline">\(f_i\)</span> are the values of <span class="math inline">\(f\)</span> at the nodes of the tetrahedron. Because our basis functions are linear, and the weighted sum of linear functions is still linear, this means that we are representing our function using a linear function space.</p>
+<h2 id="the-extension-to-3d-movement">The Extension to 3D Movement</h2>
+<p>To apply this idea to physics-based animation of wiggly bunnies we need to more clearly define some of the terms above. First, we need to be specific about what our function <span class="math inline">\(f\)</span> will be. As with the particles in the previous assignments, what we care about tracking is the position of each mesh vertex, in the world, over time. For the <span class="math inline">\(i^th\)</span> vertex we can denote this as <span class="math inline">\(\mathbf{x}^t_i \in \mathcal{R}^3\)</span>. We are going to think of this value as a mapping from some undeformed space <span class="math inline">\(\mathbf{X}\in \mathcal{R}^3\)</span> into the real-world. So the function we want to approximate is <span class="math inline">\(\mathbf{x}^t\left(\mathbf{X}\right)\)</span> which, using the above, is given by</p>
+<p><span class="math display">\[ \mathbf{x}^t\left(\mathbf{X}\right)=\sum_{i=0}^{3}\mathbf{x}^t_i\phi_i\left(\mathbf{X}\right) \]</span></p>
+<p>The take home message is that, because we evaluate <span class="math inline">\(\phi_i\)</span>’s in the undeformed space, we need our tetrahedron to be embedded in this space.</p>
+<h2 id="the-generalized-coordinates">The Generalized Coordinates</h2>
+<p>Now that we have our discrete structure setup, we can start “turning the crank” to produce our physics simulator. A single tetrahedron has four (4) vertices. Each vertex has a single <span class="math inline">\(\mathbf{x}^t_i\)</span> associated with it. As was done in assignment 2, we can store these <em>nodal positions</em> as a stacked vector and use them as generalized coordinates, so we have</p>
+<p><span class="math display">\[\mathbf{q}^t = \begin{bmatrix} \mathbf{x^t_0} \\ \mathbf{x^t_1} \\ \mathbf{x^t_2} \\ \mathbf{x^t_3} \end{bmatrix}\]</span></p>
+<p>Now let’s consider the velocity of a point in our tetrahedron. Given some specific <span class="math inline">\(\mathbf{X}\)</span>, the velocity at that point is</p>
+<p><span class="math display">\[ \frac{d\mathbf{x}^t\left(\mathbf{X}\right)}{dt} =\frac{d}{dt}\sum_{i=0}^{3}\mathbf{x}^t_i\phi_i\left(\mathbf{X}\right) \]</span></p>
+<p>However, only the nodal variables actually move in time so we end up with</p>
+<p><span class="math display">\[ \frac{d\mathbf{x}^t\left(\mathbf{X}\right)}{dt} = \sum_{i=0}^{3}\frac{d\mathbf{x}^t_i}{dt}\phi_i\left(\mathbf{X}\right) \]</span></p>
+<p>Now we can rewrite this whole thing as a matrix vector product</p>
+<p><span class="math display">\[ \frac{d\mathbf{x}^t\left(\mathbf{X}\right)}{dt} = \underbrace{\begin{bmatrix} \phi_0\left(\mathbf{X}\right)I &amp; \phi_1\left(\mathbf{X}\right)I&amp; \phi_2\left(\mathbf{X}\right)I&amp; \phi_3\left(\mathbf{X}\right)I\end{bmatrix}}_{N} \underbrace{\begin{bmatrix} \dot{\mathbf{x}}^t_0 \\ \dot{\mathbf{x}}^t_1 \\ \dot{\mathbf{x}}^t_2 \\ \dot{\mathbf{x}}^t_3 \end{bmatrix}}_{\dot{\mathbf{q}}} \]</span></p>
+<p>where <span class="math inline">\(I\)</span> is the <span class="math inline">\(3\times 3\)</span> Identity matrix.</p>
+<h2 id="the-kinetic-energy-of-a-single-tetrahedron">The Kinetic Energy of a Single Tetrahedron</h2>
+<p>Now that we have generalized coordinates and velocities we can start evaluating the energies required to perform physics simulation. The first and, and simplest energy to compute is the kinetic energy. The main difference between the kinetic energy of a mass-spring system and the kinetic energy of an FEM system, is that the FEM system must consider the kinetic energy of every infinitesimal piece of mass inside the tetrahedron.</p>
+<p>Let’s call an infinitesimal chunk of volume <span class="math inline">\(dV\)</span>. If we know the density <span class="math inline">\(\rho\)</span> of whatever our object is made out of, then the mass of that chunk is <span class="math inline">\(\rho dV\)</span> and the kinetic energy, <span class="math inline">\(T\)</span> is <span class="math inline">\(\frac{1}{2}\rho dV \dot{\mathbf{x}^t\left(\mathbf{X}\right)}^T\dot{\mathbf{x}^t\left(\mathbf{X}\right)}\)</span>. To compute the kinetic energy for the entire tetrahedron, we need to integrate over it’s volume so we have</p>
+<p><span class="math display">\[T = \frac{1}{2}\int_{\mbox{tetrahedron}}\rho \dot{\mathbf{q}}^TN\left(\mathbf{X}\right)^TN\left(\mathbf{X}\right)\dot{\mathbf{q}}dV\]</span></p>
+<p>BUT!  is constant over the tetrahedron so we can pull that outside the integration leaving</p>
+<p><span class="math display">\[T = \frac{1}{2}\dot{\mathbf{q}}^T\underbrace{\left(\int_{\mbox{tetrahedron}}\rho N\left(\mathbf{X}\right)^TN\left(\mathbf{X}\right)dV\right)}_{M_e}\dot{\mathbf{q}}\]</span></p>
+<p>in which the <em>per-element</em> mass matrix, <span class="math inline">\(M_e\)</span>, makes an appearance.. In the olden days, people did this integral by hand but now you can use symbolic math packages like <em>Mathematica</em>, <em>Maple</em> or even <em>Matlab</em> to compute its exact value.</p>
+<h2 id="the-deformation-of-a-single-tetrahedron">The Deformation of a Single Tetrahedron</h2>
+<p>Now we need to define the potential energy of our tetrahedron. Like with the spring, we will need a way to measure the deformation of our tetrahedron. Since the definition of length isn’t easy to apply for a volumetric object, we will try something else – we will define a way to characterize the deformation of a small volume of space. Remember that all this work is done to approximate the function <span class="math inline">\(\mathbf{x}^t\left(\mathbf{X}\right)\)</span> which maps a point in the undeformed object space, <span class="math inline">\(\mathbf{X}\)</span>, to the world, or deformed space. Rather than consider what happens to a point under this mapping, let’s consider what happens to a vector.</p>
+<p>To do that we pick two arbitary points in the undeformed that are infinitesimally close. We can call them <span class="math inline">\(\mathbf{X}_1\)</span> and <span class="math inline">\(\mathbf{X}_2\)</span> (boring names I know). The vector between them is <span class="math inline">\(dX = \mathbf{X}_2 - \mathbf{X}_1\)</span>. Similarly the vector between their deformed counterparts is $ dx = (_2) - (_1)$. Because we chose the undeformed points to be infinitesimally close and <span class="math inline">\(\mathbf{X}_2 = \mathbf{x}\left(\mathbf{X}_2\right) + dX\)</span>, we can use Taylor expansion to arrive at</p>
+<p><span class="math display">\[dx = \underbrace{\frac{\partial \mathbf{x}\left(\mathbf{X}\right)}{\partial \mathbf{X}}}_{F}dX\]</span></p>
+<p>where <span class="math inline">\(F\)</span> is called the deformation gradient. Remember, <span class="math inline">\(F\)</span> results from differentiating a <span class="math inline">\(3\)</span>-vector by another <span class="math inline">\(3\)</span>-vector so it is a <span class="math inline">\(3 \times 3\)</span> matrix.</p>
+<p>Because <span class="math inline">\(dX\)</span> is pointing in an arbitrary direction, <span class="math inline">\(F\)</span>, captures information about how any <span class="math inline">\(dX\)</span> changes locally, it encodes volumetric deformation.</p>
+<p>The FEM discretization provides us with a concrete formula for <span class="math inline">\(\mathbf{x}\left(\mathbf{X}\right)\)</span> which can be differentiated to compute <span class="math inline">\(F\)</span>. <em>An important thing to keep in mind –</em> because our particular FEM uses linear basis functions inside of a tetrahedron, the deformation gradient is a constant. Physically this means that all <span class="math inline">\(dX\)</span>’s are deformed in exactly the same way inside a tetrahedron.</p>
+<p>Given <span class="math inline">\(F\)</span> we can consider the squared length of any <span class="math inline">\(dx\)</span></p>
+<p><span class="math display">\[l^2 = dx^Tdx = dX^T\underbrace{\left(F^TF\right)}_{\mbox{right Cauchy-Green Strain tensor}}dX\]</span></p>
+<p>Like the spring strain, <span class="math inline">\(F^TF\)</span> is invariant to rigid motion so it’s a pretty good strain measure.</p>
+<h2 id="the-potential-energy-of-a-single-tetrahedron">The Potential Energy of a Single Tetrahedron</h2>
+<p>The potential energy function of a tetrahedron is a function that associates a single number to each value of the deformation gradient. Sadly, for the FEM case, things are a little more complicated than just squaring <span class="math inline">\(F\)</span> (but thankfully not much).</p>
+<h3 id="the-strain-energy-density">The Strain Energy density</h3>
+<p>Like the kinetic energy, we will begin by defining the potential energy on an infinitesimal chunk of the simulated object as <span class="math inline">\(\psi\left(F\left(\mathbf{X}\right)\right)dV\)</span> where <span class="math inline">\(\psi\)</span> is called the *strain energy density function. Mostly, we look up strain energy density functions in a book. Material scientists have been developing them for many years so that they mimic the behaviour of realistic materials. For this assignment you will use the well established, <a href="https://en.wikipedia.org/wiki/Neo-Hookean_solid">Neo-Hookean</a> (its better than Hooke’s Law because its new) strain energy density for compressible materials. This model approximates the behaviour of rubber-like materials. <strong>Use the alternative formulation without the <span class="math inline">\(ln J\)</span></strong>.</p>
+<p>The total potential of the tetrahedron can be defined via integration as</p>
+<p><span class="math display">\[V = \int_{\mbox{tetrahedron}}\psi\left(F\left(\mathbf{X}\right)\right)dV \]</span></p>
+<h3 id="numerical-quadrature">Numerical quadrature</h3>
+<p>Typically we don’t evaluate potential energy integrals by hand. They get quite impossible, especially as the FEM basis becomes more complex. To avoid this we typically rely on <a href="https://en.wikipedia.org/wiki/Numerical_integration">numerical quadrature</a>. In numerical quadrature we replace an integral with a weighted sum over the domain. We pick some quadrature points <span class="math inline">\(\mathbf{X}_i\)</span> and weights <span class="math inline">\(w_i\)</span> and evaluate</p>
+<p><span class="math display">\[ V \approx \sum_i=0^{p-1} \psi\left(F\left(\mathbf{X}_i\right)\right)\cdot w_i \]</span></p>
+<p>However, for linear FEM, the quadrature rule is exceedingly simple. Recall that linear basis functions imply constant deformation per tetrahedron. That means the strain energy density function is constant over the tetrahedron. Thus the perfect quadrature rule is to choose <span class="math inline">\(\mathbf{X}_i\)</span> as any point inside the tetrahedron (I typically use the centroid) and <span class="math inline">\(w_i\)</span> as the volume of the tetrahedron. This is called <em>single point</em> quadrature because it estimates the value of an integral by evaluating the integrated function at a single point.</p>
+<h2 id="forces-and-stiffness">Forces and stiffness</h2>
+<p>The per-element generalized forces acting on a single tetrahedron are given by</p>
+<p><span class="math display">\[\mathbf{f}_e = -\frac{\partial V}{\partial \mathbf{q}} \]</span></p>
+<p>and the stiffness is given by</p>
+<p><span class="math display">\[K_e = -\frac{\partial^2 V}{\partial \mathbf{q}^2} \]</span></p>
+<p>These can be directly computed from the quadrature formula above. Again, typically one uses symbolic computer packages to take these derivatives and you are allows (and encouraged) to do that for this assignment.</p>
+<p>For a tetrahedron the per-element forces are a <span class="math inline">\(12 \times 1\)</span> vector while the per-element stiffness matrix is a dense, <span class="math inline">\(12 \times 12\)</span> matrix.</p>
+<h2 id="from-a-single-tetrahedron-to-a-mesh">From a Single Tetrahedron to a Mesh</h2>
+<p>Extending all of the above to objects more complicated than a single tetrahedron is analogous to our previous jump from a single spring to a mass-spring system.</p>
+<figure>
+<img src="images/tet_mesh.png" alt="" /><figcaption>A tetrahedral mesh</figcaption>
+</figure>
+<p>The initial step is to divide the object to be simulated into a collection of tetrahedra. Neighboring tetrahedra share vertices. We now specify the generalized coordinates of this entire mesh as</p>
+<p><span class="math display">\[ \mathbf{q} = \begin{bmatrix} \mathbf{x^t}_0 \\ \mathbf{x^t}_1 \\ \mathbf{x^t}_2 \\ \vdots \\\mathbf{x^t}_n \end{bmatrix} \]</span></p>
+<p>where <span class="math inline">\(n\)</span> is the number of vertices in the mesh. We use selection matrices (as we did in <a href="https://github.com/dilevin/CSC2549-a2-mass-spring-3d">assignment 2</a>) which yield identical assembly operations for the global forces, stiffness and mass matrix.</p>
+<h2 id="time-integration">Time integration</h2>
+<p>Because you can compute all the necessasry algebraic operators (<span class="math inline">\(M\)</span>, <span class="math inline">\(K\)</span>, <span class="math inline">\(\mathbf{f}\)</span>) you can use your linearly-implict Euler code from assignment 2 to integrate your FEM system. To see the limitations of this approach, run <code>a3-finite-elements-3d arma</code> and press <code>N</code>. Interacting with the armadillo will almost immediately cause your simulation to explode. This is because our bunny was secretly gigantic! So its effective stiffness was very low. This armadillo is much smaller (less than 1 meter tall). Even though it uses the same material parameters, its effective stiffness is much higher. Linearly-implicit Euler just cannot handle it, and so … Kaboom!</p>
+<h3 id="backward-implicit-euler">Backward (Implicit) Euler</h3>
+<p>To fix this you will implement the full backward Euler integration scheme which will solve the discrete time stepping equations <span class="math display">\[M\dot{\mathbf{q}}^{t+1} = M\dot{\mathbf{q}}^{t} + \Delta t \mathbf{f}\left(\mathbf{q}^{t} + \Delta t \dot{\mathbf{q}}^{t+1})\right) \]</span></p>
+<p>The position of the mesh is updated using <span class="math inline">\(\mathbf{q}^{t} + \Delta t \dot{\mathbf{q}}^{t+1}\)</span>.</p>
+<p>To solve for <span class="math inline">\(\dot{\mathbf{q}}^{t+1}\)</span> it is useful to notice that solving the update equation above is equivalent to the <a href="https://www.google.com/search?client=safari&amp;rls=en&amp;q=Geometric+Numerical+Integration+Hairer&amp;ie=UTF-8&amp;oe=UTF-8">optimization problem</a> <span class="math display">\[ \dot{\mathbf{q}}^{t+1}=\arg\min_{\dot{\mathbf{q}}} \frac{1}{2}\left(\dot{\mathbf{q}}-\dot{\mathbf{q}}^t\right)^TM\left(\dot{\mathbf{q}}-\dot{\mathbf{q}}^t\right) + V\left(\mathbf{q}^t + \Delta t\dot{\mathbf{q}}\right)\]</span></p>
+<p>We are going to solve this minimization problem using Newton’s method.</p>
+<h3 id="newtons-method">Newton’s method</h3>
+<p><a href="https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization">Newton’s method</a> computes the local minimum of an objective function by solving a sequence of quadratic minimizations. We start with the current state of our object (<span class="math inline">\(\mathbf{q}^t\)</span> and <span class="math inline">\(\dot{\mathbf{q}}^t\)</span>) and our goal is to compute <span class="math inline">\(\dot{\mathbf{q}}^{t+1} = \dot{\mathbf{q}}^{t} + \Delta \dot{\mathbf{q}}\)</span></p>
+<p>Let’s define the variable <span class="math inline">\(\bar{\mathbf{q}} = \mathbf{q}^{t} + \Delta \dot{\mathbf{q}}^{t}\)</span>. We can Taylor expand our objective around this point, giving us</p>
+<p><span class="math display">\[\Delta \dot{\mathbf{q}}^* = \arg\min_{\Delta \dot{\mathbf{q}}} \frac{1}{2}\Delta \dot{\mathbf{q}}^TM\Delta \dot{\mathbf{q}} - \Delta \dot{\mathbf{q}}^TM\dot{\mathbf{q}}^t  - \frac{1}{2}\Delta t^2 \Delta \dot{\mathbf{q}}^TK\left(\bar{\mathbf{q}}\right)\Delta \dot{\mathbf{q}} - \Delta t\Delta \dot{\mathbf{q}}^T\mathbf{f}_\left(\bar{\mathbf{q}}\right)\]</span></p>
+<p>The solution to this minimization problem is found by solving</p>
+<p><span class="math display">\[H\Delta \dot{\mathbf{q}} = -\mathbf{g}\]</span></p>
+<p>where <span class="math inline">\(H\)</span> is the Hessian of the above quadratic objective, and <span class="math inline">\(\mathbf{g}\)</span> is the gradient.</p>
+<p>Newton’s method repeatedly computes <span class="math inline">\(\Delta \dot{\mathbf{q}}\)</span>, using it to update both <span class="math inline">\(\mathbf{q}\)</span> and <span class="math inline">\(\dot{\mathbf{q}}\)</span>, until it either reaches some maximum number of iterations or finds the point for which the gradient of the full cost function is very close to zero.</p>
+<h3 id="line-search">Line Search</h3>
+<p>Unfortunately the <span class="math inline">\(\Delta \dot{\mathbf{q}}\)</span> computed by Newton’s method can be overly ambitious causing the algorithm to never find a local minimum. To avoid this problem, robust optimization schemes give themselves the option of taking a fractional newton’s step. One simple way to find a good step size is to use <a href="https://en.wikipedia.org/wiki/Backtracking_line_search">backtracking line search</a>. Line search is so named because it searches in the <em>direction</em> computed by Newton’s method (along the line) but looks for a value of the full energy function that guarantees, for instance, sufficient decrease. Backtracking line search gets its name because it initially tries to take a full Newton Step, and if that step is flawed, divides the step by some ratio and then checks the result of this new step. This procedure is repeated until either a suitable step is found, or the step length being checked goes to zero.</p>
+<h2 id="high-resolution-display-mesh-via-skinning">High Resolution Display Mesh via Skinning</h2>
+<p>The final component of this assignment involves making our FEM simulation look a bit more appealing. FEM calculations can be slow, especially if we want real-time performance. This often limits us to the use of relatively low resolution simulation meshes. To compensate for this we can adopt the concept of skinning from computer animation.</p>
+<p>Let us define two different meshes. The first is our simulation tetrahedral mesh with vertex positions given by <span class="math inline">\(\mathbf{q}^{t}\)</span>. The second is going to be a higher resolution triangle mesh, for display purposes. We will assume that our display mesh is completely enclosed by the simulation mesh when then simulation mesh is undeformed.</p>
+<p>Our goal is to transfer the motion of the simulation mesh to the display mesh. Remember that the FEM discretization defines the motion of our object, not just at the vertices, but everywhere inside the mesh (via the basis functions). Specifically, for any point in the undeformed space <span class="math inline">\(\mathbf{X}\)</span> I can reconstruct the deformed position <span class="math inline">\(\mathbf{x}^t\left(\mathbf{X}\right)\)</span> as long as I know which tetrahedron contains <span class="math inline">\(\mathbf{X}\)</span>.</p>
+<p>This gives us a simply algorithm to deform our display mesh. For each vertex in the display mesh (<span class="math inline">\(\mathbf{X}_j\)</span>), find the tetrahedron, <span class="math inline">\(e\)</span>, that contains <span class="math inline">\(\mathbf{X}_j\)</span> then move that vertex to position <span class="math inline">\(N_e\mathbf{q}_e\)</span>. Here <span class="math inline">\(N_e\)</span> and <span class="math inline">\(\mathbf{q}_e\)</span> are the basis function and generalized coordinates for the containing tetrahedron.</p>
+<p>This can be expresses as a linear operation</p>
+<p><span class="math display">\[\mathbf{x}^t_\mbox{display} = W\mathbf{q}^{t} \]</span></p>
+<p>where <span class="math inline">\(\mathbf{x}_\mbox{display}\)</span> are the deformed vertex positions of the display mesh and <span class="math inline">\(W\)</span> is the <em>skinning matrix</em> which contains the appropriate basis function values.</p>
+<h2 id="assignment-implementation">Assignment Implementation</h2>
+<h3 id="implementation-notes">Implementation Notes</h3>
+<p>For this course most functions will be implemented in <strong>.cpp</strong> files. In this assignment the only exception is that time integrators are implemented in <strong>.h</strong> files. This is due to the use of lambda functions to pass force data to the time integration algorithms. Finite element derivatives are both tricky and tedious to do correctly. Because of this you <strong>DO NOT</strong> have to take these derivatives by hand (unless you want to show off your mad skills). You can use a symbolic math package such as <em>Maple</em>, <em>Mathematica</em> or <em>Matlab</em>. <strong>Note:</strong> You can not use automatic differentiation, only symbolic math packages.</p>
+<p>Running <code>a3-finite-elements-3d</code> will show a coarse bunny mesh integrated with linearly-implicit Euler. Running <code>a3-finite-elements-3d arma</code> will show a coarse armadillo mesh integrated using backward Euler. For each mesh you can toggle between the simulation and skinned meshes by pressing <code>S</code>. You can toggle integrators by pressing <code>N</code>. <strong>Note:</strong> the linearly-implicit integrator <strong>WILL</strong> explode when used with the armadillo mesh.</p>
+<h3 id="important">Important</h3>
+<p>Some of the functions from assignment 2 are reused here. If you correct implementation errors in those functions, your grades for the previous assignment will be updated to reflect that.</p>
+<h3 id="phi_linear_tetrahedron.cpp">phi_linear_tetrahedron.cpp</h3>
+<p>Evaluate the linear shape functions for a tetrahedron. This function returns a 4D vector which contains the values of the shape functions for each vertex at the world space point x (assumed to be inside the element).</p>
+<h3 id="dphi_linear_tetrahedron_dx.cpp">dphi_linear_tetrahedron_dX.cpp</h3>
+<p>Piecewise constant gradient matrix for linear shape functions. Row <span class="math inline">\(i\)</span> of the returned matrix contains the gradient of the <span class="math inline">\(i^{th}\)</span> shape function.</p>
+<h3 id="psi_neo_hookean.cpp">psi_neo_hookean.cpp</h3>
+<p>Compute the Neo-Hookean strain energy density.</p>
+<h3 id="dpsi_neo_hookean_df.cpp">dpsi_neo_hookean_dF.cpp</h3>
+<p>Compute the first Piola-Kirchoff (the gradient of the strain energy density with respect to the deformation gradient). You can use a symbolic math package to do this (but don’t just look it up on the internet please).</p>
+<h3 id="d2psi_neo_hookean_df2.cpp">d2psi_neo_hookean_dF2.cpp</h3>
+<p>Compute the hessian of the strain energy density with respect to the deformation gradient. You can use a symbolic math package to do this (but don’t just look it up on the internet please).</p>
+<h3 id="t_linear_tetrahedron.cpp">T_linear_tetrahedron.cpp</h3>
+<p>Compute the kinetic energy of a single tetrahedron.</p>
+<h3 id="quadrature_single_point.h">quadrature_single_point.h</h3>
+<p>Single point quadrature for a constant strain tetrahedron (CST).</p>
+<h3 id="v_linear_tetrahedron.cpp">V_linear_tetrahedron.cpp</h3>
+<p>Compute the potential energy of a single tetrahedron. <strong>Note:</strong> you will need both <em>psi_neo_hookean.cpp</em> and <em>quadrature_single_point.h</em> to do this.</p>
+<h3 id="dv_linear_tetrahedron_dq.cpp">dV_linear_tetrahedron_dq.cpp</h3>
+<p>Compute the gradient of the potential energy of a single tetrahedron. <strong>Note:</strong> you will need both <em>dpsi_neo_hookean_dq.cpp</em> and <em>quadrature_single_point.h</em> to do this.</p>
+<h3 id="d2v_linear_tetrahedron_dq2.cpp">d2V_linear_tetrahedron_dq2.cpp</h3>
+<p>Compute the hessian of the potential energy of a single tetrahedron. <strong>Note:</strong> you will need both <em>d2psi_neo_hookean_dq2.cpp</em> and <em>quadrature_single_point.h</em> to do this.</p>
+<h3 id="v_spring_particle_particle.cpp">V_spring_particle_particle.cpp</h3>
+<p>The potential energy of a non-zero rest length spring attached to two vertices of the mesh. <strong>Use your code from the last assignment</strong>.</p>
+<h3 id="dv_spring_particle_particle_dq.cpp">dV_spring_particle_particle_dq.cpp</h3>
+<p>The gradient of the spring potential energy. <strong>Use your code from the last assignment</strong>.</p>
+<h3 id="mass_matrix_linear_tetrahedron.cpp">mass_matrix_linear_tetrahedron.cpp</h3>
+<p>Compute the dense mass matrix for a single tetrahedron.</p>
+<h3 id="mass_matrix_mesh.cpp">mass_matrix_mesh.cpp</h3>
+<p>Assemble the full mass matrix for the entire tetrahedral mesh.</p>
+<h3 id="assemble_forces.cpp">assemble_forces.cpp</h3>
+<p>Assemble the global force vector for the finite element mesh.</p>
+<h3 id="assemble_stiffness.cpp">assemble_stiffness.cpp</h3>
+<p>Assemble the global stiffness matrix for the finite element mesh.</p>
+<h3 id="build_skinning_matrix.cpp">build_skinning_matrix.cpp</h3>
+<p>Build the skinning matrix that maps position from the coarse simulation mesh to the high resolution rendering mesh.</p>
+<h3 id="fixed_point_constraints.cpp">fixed_point_constraints.cpp</h3>
+<p><strong>Use your code from the last assignment</strong></p>
+<h3 id="pick_nearest_vertices.cpp">pick_nearest_vertices.cpp</h3>
+<p><strong>Use your code from the last assignment</strong></p>
+<h3 id="linearly_implicit_euler.h">linearly_implicit_euler.h</h3>
+<p><strong>Use your code from the last assignment</strong></p>
+<h3 id="newtons_method.h">newtons_method.h</h3>
+<p>Implement Newton’s method with backtracking line search. Use the following parameter values: <em>alpha (initial step length) = 1</em>, <em>p (scaling factor) = 0.5</em>, <em>c (ensure sufficient decrease) = 1e-8</em>.</p>
+<h3 id="implicit_euler.h">implicit_euler.h</h3>
+<p>Using your Newton’s method, implement a fully implicit solver. <strong>To ensure reasonable performance, use a maximum of five (5) iterations</strong>.</p>
+</article>
+</html>
