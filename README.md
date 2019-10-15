@@ -169,7 +169,7 @@ Let's call an infinitesimal chunk of volume <img src="/tex/7ccb42e2821b2a382a72d
 
 <p align="center"><img src="/tex/f20040204ebc8a72f628b655070e699b.svg?invert_in_darkmode&sanitize=true" align=middle width=311.59084605pt height=37.3519608pt/></p>
 
-BUT \dot{\mathbf{q}} is constant over the tetrahedron so we can pull that outside the integration leaving
+BUT~ <img src="/tex/6877f647e069046a8b1d839a5a801c69.svg?invert_in_darkmode&sanitize=true" align=middle width=9.97711604999999pt height=22.41366929999999pt/> is constant over the tetrahedron so we can pull that outside the integration leaving
 
 <p align="center"><img src="/tex/63d88efc25d5db55efb8d46d2ca78bc2.svg?invert_in_darkmode&sanitize=true" align=middle width=338.53143885pt height=63.53458154999999pt/></p>
 
