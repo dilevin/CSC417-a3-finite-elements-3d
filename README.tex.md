@@ -169,7 +169,7 @@ Let's call an infinitesimal chunk of volume $dV$. If we know the density $\rho$ 
 
 $$T = \frac{1}{2}\int_{\mbox{tetrahedron}}\rho \dot{\mathbf{q}}^TN\left(\mathbf{X}\right)^TN\left(\mathbf{X}\right)\dot{\mathbf{q}}dV$$
 
-BUT! \dot{\mathbf{q}} is constant over the tetrahedron so we can pull that outside the integration leaving
+BUT \dot{\mathbf{q}} is constant over the tetrahedron so we can pull that outside the integration leaving
 
 $$T = \frac{1}{2}\dot{\mathbf{q}}^T\underbrace{\left(\int_{\mbox{tetrahedron}}\rho N\left(\mathbf{X}\right)^TN\left(\mathbf{X}\right)dV\right)}_{M_e}\dot{\mathbf{q}}$$
 
