@@ -113,7 +113,7 @@ The idea of the finite element method is to represent quantities inside a volume
 
 $$f\left(\mathbf{x}\right)=\sum_{i=0}^{b-1}w_i\phi_i\left(\mathbf{x}\right)$$
 
-where $w_i$ are weighting coefficients. Designing a finite element method involves making a judicious choice of basis functions such that we can compute the $w_i$'s efficiently. Spoiler Alert: n the case of elastodynamics, these $w_i$'s will become our generalized coordinates and will be computed via time integration. 
+where $w_i$ are weighting coefficients. Designing a finite element method involves making a judicious choice of basis functions such that we can compute the $w_i$'s efficiently. Spoiler Alert: in the case of elastodynamics, these $w_i$'s will become our generalized coordinates and will be computed via time integration. 
 
 ## Our Geometric Primitive: The Tetrahedron
 
@@ -169,7 +169,7 @@ Let's call an infinitesimal chunk of volume $dV$. If we know the density $\rho$ 
 
 $$T = \frac{1}{2}\int_{\mbox{tetrahedron}}\rho \dot{\mathbf{q}}^TN\left(\mathbf{X}\right)^TN\left(\mathbf{X}\right)\dot{\mathbf{q}}dV$$
 
-BUT! \dot{\mathbf{q}} is constant over the tetrahedron so we can pull that outside the integration leaving
+BUT~ $\dot{\mathbf{q}}$ is constant over the tetrahedron so we can pull that outside the integration leaving
 
 $$T = \frac{1}{2}\dot{\mathbf{q}}^T\underbrace{\left(\int_{\mbox{tetrahedron}}\rho N\left(\mathbf{X}\right)^TN\left(\mathbf{X}\right)dV\right)}_{M_e}\dot{\mathbf{q}}$$
 
@@ -179,7 +179,7 @@ in which the *per-element* mass matrix, $M_e$, makes an appearance.. In the olde
 
 Now we need to define the potential energy of our tetrahedron. Like with the spring, we will need a way to measure the deformation of our tetrahedron. Since the definition of length isn't easy to apply for a volumetric object, we will try something else -- we will define a way to characterize the deformation of a small volume of space. Remember that all this work is done to approximate the function $\mathbf{x}^t\left(\mathbf{X}\right)$ which maps a point in the undeformed object space, $\mathbf{X}$, to the world, or deformed space. Rather than consider what happens to a point under this mapping, let's consider what happens to a vector.  
 
-To do that we pick two arbitary points in the undeformed that are infinitesimally close. We can call them $\mathbf{X}_1$ and $\mathbf{X}_2$ (boring names I know). The vector between them is $dX = \mathbf{X}_2 - \mathbf{X}_1$. Similarly the vector between their deformed counterparts is $ dx = \mathbf{x}\left(\mathbf{X}_2\right) - \mathbf{x}\left(\mathbf{X}_1\right)$. Because we chose the undeformed points to be infinitesimally close and $\mathbf{X}_2 = \mathbf{x}\left(\mathbf{X}_2\right) + dX$, we can 
+To do that we pick two arbitary points in the undeformed that are infinitesimally close. We can call them $\mathbf{X}_1$ and $\mathbf{X}_2$ (boring names I know). The vector between them is $dX = \mathbf{X}_2 - \mathbf{X}_1$. Similarly the vector between their deformed counterparts is $ dx = \mathbf{x}\left(\mathbf{X}_2\right) - \mathbf{x}\left(\mathbf{X}_1\right)$. Because we chose the undeformed points to be infinitesimally close and $\mathbf{x}\left(\mathbf{X}_2\right) = \mathbf{x}\left(\mathbf{X}_1\right + dX)$, we can 
 use Taylor expansion to arrive at
 
 $$dx = \underbrace{\frac{\partial \mathbf{x}\left(\mathbf{X}\right)}{\partial \mathbf{X}}}_{F}dX$$
