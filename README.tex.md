@@ -257,9 +257,21 @@ We are going to solve this minimization problem using Newton's method.
 
 ### Newton's method
 
-[Newton's method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization) computes the local minimum of an objective function by iteratively solving a sequence of quadratic minimizations. Let's look at the process for a single iteration (say the $i^{th}$ iteration). At this iteration we already have a guess for our new $\dot{\mathbf{q}}
+[Newton's method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization) computes the local minimum of an objective function by iteratively solving a sequence of quadratic minimizations. Let's look at the process for a single iteration (say the $i^{th}$ iteration). At this iteration we already have the $i^{th}$ guess for our new velocity, denoted $\dot{\mathbf{q}}^{t+1}_{(i)}$. The goal of the $i+1$ iteration is to compute a small change in the current velocity estimate,$\Delta \dot{\mathbf{q}}$, that reduces the objective function.  
 
-We start with the current state of our object ($\mathbf{q}^t$ and $\dot{\mathbf{q}}^t$) and our goal is to compute $\dot{\mathbf{q}}^{t+1} =  \dot{\mathbf{q}}^{t} + \Delta \dot{\mathbf{q}}$
+This is done by solving a local, quadratic optimization of the formula
+
+$$ \Delta \dot{\mathbf{q}}^* = \arg\min_{\Delta \dot{\mathbf{q}}} \frac{1}{2}\Delta \dot{\mathbf{q}}^T H\left(\dot{\mathbf{q}}^{t+1}_{(i)}\right) \Delta \dot{\mathbf{q}} + \mathbf{g}\left(\dot{\mathbf{q}}^{t+1}_{(i)}\right)^T\Delta \dot{\mathbf{q}}$$
+
+where $\mathbf{g}$ is the Gradient of the backward Euler integration cost function, and $H$ is the Hessian.  In this case we have $\mathbf{g} = M\dot{\mathbf{q}}^{t+1}_{(i)} - M\dot{\mathbf{q}}^t + \Delta t\frac{\partial V\left(\mathbf{q}^t + \Delta t\dot{\mathbf{q}}^{t+1}_{(i)}\right)}{\partial \mathbf{q}}$ and $H = M+\Delta t^2\frac{\partial^2 V\left(\mathbf{q}^t + \Delta t\dot{\mathbf{q}}^{t+1}_{(i)}\right)}{\partial\mathbf{q}^2}$
+
+The solution to this problem is given by $\Delta \dot{\mathbf{q}}^*=-H^{-1}\mathbf{g}$. You then compute $\dot{\mathbf{q}}^{t+1}_{(i+1)} = \dot{\mathbf{q}}^{t+1}_{(i)} + \Delta \dot{\mathbf{q}}^*$. 
+
+Repeating the process of constructing and solving this quadratic optimization is at the heart of Newton's method.
+<!--  -->
+
+
+<!-- We start with the current state of our object ($\mathbf{q}^t$ and $\dot{\mathbf{q}}^t$) and our goal is to compute $\dot{\mathbf{q}}^{t+1} =  \dot{\mathbf{q}}^{t} + \Delta \dot{\mathbf{q}}$
 
 Let's define the variable $\bar{\mathbf{q}} = \mathbf{q}^{t} + \Delta \dot{\mathbf{q}}^{t}$. We can Taylor expand our objective around this point, giving us
 
@@ -271,7 +283,7 @@ $$H\Delta \dot{\mathbf{q}} = -\mathbf{g}$$
 
 where $H$ is the Hessian of the above quadratic objective, and $\mathbf{g}$ is the gradient. 
 
-Newton's method repeatedly computes $\Delta \dot{\mathbf{q}}$, using it to update both $\mathbf{q}$ and $\dot{\mathbf{q}}$, until it either reaches some maximum number of iterations or finds the point for which the gradient of the full cost function is very close to zero. 
+Newton's method repeatedly computes $\Delta \dot{\mathbf{q}}$, using it to update both $\mathbf{q}$ and $\dot{\mathbf{q}}$, until it either reaches some maximum number of iterations or finds the point for which the gradient of the full cost function is very close to zero.  -->
 
 ### Line Search
 
