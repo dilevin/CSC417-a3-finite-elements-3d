@@ -209,7 +209,7 @@ The total potential of the tetrahedron can be defined via integration as
 $$V = \int_{\mbox{tetrahedron}}\psi\left(F\left(\mathbf{X}\right)\right)dV $$
 
 ### Numerical quadrature
-Typically we don't evaluate potential energy integrals by hand. They get quite impossible, especially as the FEM basis becomes more complex. To avoid this we typically rely on [numerical quadrature](https://en.wikipedia.org/wiki/Numerical_integration). In numerical quadrature we replace an integral with a weighted sum over the domain. We pick some quadrature points $\mathbf{X}_i$ and weights $w_i$ and evaluate
+Typically we don't evaluate potential energy integrals by hand. They get quite impossible, especially as the FEM basis becomes more complex. To avoid this we typically rely on [numerical quadrature](https://en.wikipedia.org/wiki/Numerical_integration). In numerical quadrature we replace an integral with a weighted sum over the domain. We pick some quadrature points $\mathbf{X}_i$ (specified in barycentric coordinates for tetrahedral meshes) and weights $w_i$ and evaluate
 
 $$ V \approx \sum_i=0^{p-1} \psi\left(F\left(\mathbf{X}_i\right)\right)\cdot w_i $$
 
