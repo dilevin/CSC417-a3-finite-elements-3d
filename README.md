@@ -257,7 +257,21 @@ We are going to solve this minimization problem using Newton's method.
 
 ### Newton's method
 
-[Newton's method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization) computes the local minimum of an objective function by solving a sequence of quadratic minimizations. We start with the current state of our object (<img src="/tex/7cdb1bc71035910e68927b8821ecae9a.svg?invert_in_darkmode&sanitize=true" align=middle width=14.942908199999989pt height=26.085962100000025pt/> and <img src="/tex/ef7188e17669f49e15672d7280b80119.svg?invert_in_darkmode&sanitize=true" align=middle width=14.942908199999989pt height=26.085962100000025pt/>) and our goal is to compute <img src="/tex/5229a0b816a5e512d358e842aab8f4c4.svg?invert_in_darkmode&sanitize=true" align=middle width=113.85812789999999pt height=26.76175259999998pt/>
+[Newton's method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization) computes the local minimum of an objective function by iteratively solving a sequence of quadratic minimizations. Let's look at the process for a single iteration (say the <img src="/tex/3def24cf259215eefdd43e76525fb473.svg?invert_in_darkmode&sanitize=true" align=middle width=18.32504519999999pt height=27.91243950000002pt/> iteration). At this iteration we already have the <img src="/tex/3def24cf259215eefdd43e76525fb473.svg?invert_in_darkmode&sanitize=true" align=middle width=18.32504519999999pt height=27.91243950000002pt/> guess for our new velocity, denoted <img src="/tex/4ae0186e20725d789f0720e970fbca2b.svg?invert_in_darkmode&sanitize=true" align=middle width=31.586827799999988pt height=28.894955100000008pt/>. The goal of the <img src="/tex/48a0115fc523b1aae58ade9e16001f59.svg?invert_in_darkmode&sanitize=true" align=middle width=33.97362704999999pt height=21.68300969999999pt/> iteration is to compute a small change in the current velocity estimate,<img src="/tex/1606eff7b7a2241374521e03fe1b7239.svg?invert_in_darkmode&sanitize=true" align=middle width=23.67578729999999pt height=22.465723500000017pt/>, that reduces the objective function.  
+
+This is done by solving a local, quadratic optimization of the formula
+
+<p align="center"><img src="/tex/96a0d4689a271ea009338df0fe7d3441.svg?invert_in_darkmode&sanitize=true" align=middle width=372.8864172pt height=35.580073649999996pt/></p>
+
+where <img src="/tex/5f3cc59831e6b4aef298a2dacada3fe7.svg?invert_in_darkmode&sanitize=true" align=middle width=9.714576299999992pt height=14.611878600000017pt/> is the Gradient of the backward Euler integration cost function, and <img src="/tex/7b9a0316a2fcd7f01cfd556eedf72e96.svg?invert_in_darkmode&sanitize=true" align=middle width=14.99998994999999pt height=22.465723500000017pt/> is the Hessian.  In this case we have <img src="/tex/688dbb64333e268488085f69a78728c2.svg?invert_in_darkmode&sanitize=true" align=middle width=277.86338414999994pt height=51.61677179999998pt/> and <img src="/tex/254b5869977f861ee43c7fd647de6abc.svg?invert_in_darkmode&sanitize=true" align=middle width=210.9344292pt height=51.61677179999998pt/>
+
+The solution to this problem is given by <img src="/tex/da730e32b8911b7e9ad3398f199274a0.svg?invert_in_darkmode&sanitize=true" align=middle width=108.29894295pt height=26.76175259999998pt/>. You then compute <img src="/tex/e4a4c4648c0506be007da96bb84aa9de.svg?invert_in_darkmode&sanitize=true" align=middle width=147.19636469999998pt height=28.894955100000008pt/>. 
+
+Repeating the process of constructing and solving this quadratic optimization is at the heart of Newton's method.
+<!--  -->
+
+
+<!-- We start with the current state of our object (<img src="/tex/7cdb1bc71035910e68927b8821ecae9a.svg?invert_in_darkmode&sanitize=true" align=middle width=14.942908199999989pt height=26.085962100000025pt/> and <img src="/tex/ef7188e17669f49e15672d7280b80119.svg?invert_in_darkmode&sanitize=true" align=middle width=14.942908199999989pt height=26.085962100000025pt/>) and our goal is to compute <img src="/tex/5229a0b816a5e512d358e842aab8f4c4.svg?invert_in_darkmode&sanitize=true" align=middle width=113.85812789999999pt height=26.76175259999998pt/>
 
 Let's define the variable <img src="/tex/06084bd13aad92a3f657add21d5dc25e.svg?invert_in_darkmode&sanitize=true" align=middle width=96.39232184999999pt height=26.085962100000025pt/>. We can Taylor expand our objective around this point, giving us
 
@@ -269,7 +283,7 @@ The solution to this minimization problem is found by solving
 
 where <img src="/tex/7b9a0316a2fcd7f01cfd556eedf72e96.svg?invert_in_darkmode&sanitize=true" align=middle width=14.99998994999999pt height=22.465723500000017pt/> is the Hessian of the above quadratic objective, and <img src="/tex/5f3cc59831e6b4aef298a2dacada3fe7.svg?invert_in_darkmode&sanitize=true" align=middle width=9.714576299999992pt height=14.611878600000017pt/> is the gradient. 
 
-Newton's method repeatedly computes <img src="/tex/1606eff7b7a2241374521e03fe1b7239.svg?invert_in_darkmode&sanitize=true" align=middle width=23.67578729999999pt height=22.465723500000017pt/>, using it to update both <img src="/tex/e73485aa867794d51ccd8725055d03a3.svg?invert_in_darkmode&sanitize=true" align=middle width=9.97711604999999pt height=14.611878600000017pt/> and <img src="/tex/6877f647e069046a8b1d839a5a801c69.svg?invert_in_darkmode&sanitize=true" align=middle width=9.97711604999999pt height=22.41366929999999pt/>, until it either reaches some maximum number of iterations or finds the point for which the gradient of the full cost function is very close to zero. 
+Newton's method repeatedly computes <img src="/tex/1606eff7b7a2241374521e03fe1b7239.svg?invert_in_darkmode&sanitize=true" align=middle width=23.67578729999999pt height=22.465723500000017pt/>, using it to update both <img src="/tex/e73485aa867794d51ccd8725055d03a3.svg?invert_in_darkmode&sanitize=true" align=middle width=9.97711604999999pt height=14.611878600000017pt/> and <img src="/tex/6877f647e069046a8b1d839a5a801c69.svg?invert_in_darkmode&sanitize=true" align=middle width=9.97711604999999pt height=22.41366929999999pt/>, until it either reaches some maximum number of iterations or finds the point for which the gradient of the full cost function is very close to zero.  -->
 
 ### Line Search
 
