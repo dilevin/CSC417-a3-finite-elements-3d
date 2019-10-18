@@ -209,9 +209,9 @@ The total potential of the tetrahedron can be defined via integration as
 $$V = \int_{\mbox{tetrahedron}}\psi\left(F\left(\mathbf{X}\right)\right)dV $$
 
 ### Numerical quadrature
-Typically we don't evaluate potential energy integrals by hand. They get quite impossible, especially as the FEM basis becomes more complex. To avoid this we typically rely on [numerical quadrature](https://en.wikipedia.org/wiki/Numerical_integration). In numerical quadrature we replace an integral with a weighted sum over the domain. We pick some quadrature points $\mathbf{X}_i$ and weights $w_i$ and evaluate
+Typically we don't evaluate potential energy integrals by hand. They get quite impossible, especially as the FEM basis becomes more complex. To avoid this we typically rely on [numerical quadrature](https://en.wikipedia.org/wiki/Numerical_integration). In numerical quadrature we replace an integral with a weighted sum over the domain. We pick some quadrature points $\mathbf{X}_i$ (specified in barycentric coordinates for tetrahedral meshes) and weights $w_i$ and evaluate
 
-$$ V \approx \sum_i=0^{p-1} \psi\left(F\left(\mathbf{X}_i\right)\right)\cdot w_i $$
+$$ V \approx \sum_{i=0}^{p-1} \psi\left(F\left(\mathbf{X}_i\right)\right)\cdot w_i $$
 
 However, for linear FEM, the quadrature rule is exceedingly simple. Recall that linear basis functions imply constant deformation per tetrahedron. That means the strain energy density function is constant over the tetrahedron. Thus the perfect quadrature rule is to choose $\mathbf{X}_i$ as any point inside the tetrahedron (I typically use the centroid) and $w_i$ as the volume of the tetrahedron. This is called *single point* quadrature because it estimates the value of an integral by evaluating the integrated function at a single point. 
 
