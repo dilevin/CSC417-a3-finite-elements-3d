@@ -257,7 +257,9 @@ We are going to solve this minimization problem using Newton's method.
 
 ### Newton's method
 
-[Newton's method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization) computes the local minimum of an objective function by solving a sequence of quadratic minimizations. We start with the current state of our object ($\mathbf{q}^t$ and $\dot{\mathbf{q}}^t$) and our goal is to compute $\dot{\mathbf{q}}^{t+1} =  \dot{\mathbf{q}}^{t} + \Delta \dot{\mathbf{q}}$
+[Newton's method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization) computes the local minimum of an objective function by iteratively solving a sequence of quadratic minimizations. Let's look at the process for a single iteration (say the $i^{th}$ iteration). At this iteration we already have a guess for our new $\dot{\mathbf{q}}
+
+We start with the current state of our object ($\mathbf{q}^t$ and $\dot{\mathbf{q}}^t$) and our goal is to compute $\dot{\mathbf{q}}^{t+1} =  \dot{\mathbf{q}}^{t} + \Delta \dot{\mathbf{q}}$
 
 Let's define the variable $\bar{\mathbf{q}} = \mathbf{q}^{t} + \Delta \dot{\mathbf{q}}^{t}$. We can Taylor expand our objective around this point, giving us
 
