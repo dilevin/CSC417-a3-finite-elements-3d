@@ -1,3 +1,5 @@
+[![](https://github.com/dilevin/CSC2549-a3-finite-elements-3d/workflows/Build-CSC2549-Assignment-Three/badge.svg)](https://github.com/dilevin/CSC2549-a3-finite-elements-3d/actions)
+
 ## Introduction
 
 The third assignment will introduce you to the most common numerical method for simulating, well, almost anything in Computer Graphics, the mighty Finite Element Method.  
