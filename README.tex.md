@@ -202,7 +202,7 @@ The potential energy function of a tetrahedron is a function that associates a s
 
 ### The Strain Energy density
 
-Like the kinetic energy, we will begin by defining the potential energy on an infinitesimal chunk of the simulated object as $\psi\left(F\left(\mathbf{X}\right)\right)dV$ where $\psi$ is called the *strain energy density function. Mostly, we look up strain energy density functions in a book. Material scientists have been developing them for many years so that they mimic the behaviour of realistic materials. For this assignment you will use the well established, [Neo-Hookean](https://en.wikipedia.org/wiki/Neo-Hookean_solid) (its better than Hooke's Law because its new) strain energy density for compressible materials. This model approximates the behaviour of rubber-like materials. **Use the alternative formulation without the $ln J$**. 
+Like the kinetic energy, we will begin by defining the potential energy on an infinitesimal chunk of the simulated object as $\psi\left(F\left(\mathbf{X}\right)\right)dV$ where $\psi$ is called the *strain energy density function. Mostly, we look up strain energy density functions in a book. Material scientists have been developing them for many years so that they mimic the behaviour of realistic materials. For this assignment you will use the well established, [Neo-Hookean](https://en.wikipedia.org/wiki/Neo-Hookean_solid) (its better than Hooke's Law because its new) strain energy density for compressible materials. This model approximates the behaviour of rubber-like materials. **Use the first compressible formulation listed, but remove the the $ln J$**. 
 
 The total potential of the tetrahedron can be defined via integration as 
 
