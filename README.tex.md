@@ -95,7 +95,7 @@ Once built, you can execute the assignment from inside the `build/` using
 
 ## Background
 
-In this assignment you will get a chance to implement one of the  gold-standard methods for simulating elastic objects -- the finite element method (FEM). Unlike the particles in the previous [assignment](https://github.com/dilevin/CSC2549-a2-mass-spring-3d), the finite-element method allows us compute the motion of continuous volumes of material. This is enabled by assuming that the motion of a small region can be well approximated by a simple function space. Using this assumption we will see how to generate and solve the equations of motion.   
+In this assignment you will get a chance to implement one of the  gold-standard methods for simulating elastic objects -- the finite element method (FEM). Unlike the particles in the previous [assignment](https://github.com/dilevin/CSC417-a2-mass-spring-3d), the finite-element method allows us compute the motion of continuous volumes of material. This is enabled by assuming that the motion of a small region can be well approximated by a simple function space. Using this assumption we will see how to generate and solve the equations of motion.   
 
 FEM has wonderfully practical origins, it was created by engineers to study [complex aerodynamical and elastic problems](https://en.wikipedia.org/wiki/Finite_element_method) in the 1940s. My MSc supervisor used to regale me with stories of solving finite element equations by hand on a chalkboard. With the advent of modern computers, its use as skyrocketed.  
 
@@ -179,7 +179,7 @@ in which the *per-element* mass matrix, $M_e$, makes an appearance.. In the olde
 
 Now we need to define the potential energy of our tetrahedron. Like with the spring, we will need a way to measure the deformation of our tetrahedron. Since the definition of length isn't easy to apply for a volumetric object, we will try something else -- we will define a way to characterize the deformation of a small volume of space. Remember that all this work is done to approximate the function $\mathbf{x}^t\left(\mathbf{X}\right)$ which maps a point in the undeformed object space, $\mathbf{X}$, to the world, or deformed space. Rather than consider what happens to a point under this mapping, let's consider what happens to a vector.  
 
-To do that we pick two arbitary points in the undeformed that are infinitesimally close. We can call them $\mathbf{X}_1$ and $\mathbf{X}_2$ (boring names I know). The vector between them is $dX = \mathbf{X}_2 - \mathbf{X}_1$. Similarly the vector between their deformed counterparts is $ dx = \mathbf{x}\left(\mathbf{X}_2\right) - \mathbf{x}\left(\mathbf{X}_1\right)$. Because we chose the undeformed points to be infinitesimally close and $\mathbf{x}\left(\mathbf{X}_2\right) = \mathbf{x}\left(\mathbf{X}_1\right + dX)$, we can 
+To do that we pick two arbitary points in the undeformed that are infinitesimally close. We can call them $\mathbf{X}_1$ and $\mathbf{X}_2$ (boring names I know). The vector between them is $dX = \mathbf{X}_2 - \mathbf{X}_1$. Similarly the vector between their deformed counterparts is $dx = \mathbf{x}\left(\mathbf{X}_2\right) - \mathbf{x}\left(\mathbf{X}_1\right)$. Because we chose the undeformed points to be infinitesimally close and $\mathbf{x}\left(\mathbf{X}_2\right) = \mathbf{x}\left(\mathbf{X}_1 + dX \right)$, we can 
 use Taylor expansion to arrive at
 
 $$dx = \underbrace{\frac{\partial \mathbf{x}\left(\mathbf{X}\right)}{\partial \mathbf{X}}}_{F}dX$$
@@ -202,7 +202,11 @@ The potential energy function of a tetrahedron is a function that associates a s
 
 ### The Strain Energy density
 
-Like the kinetic energy, we will begin by defining the potential energy on an infinitesimal chunk of the simulated object as $\psi\left(F\left(\mathbf{X}\right)\right)dV$ where $\psi$ is called the *strain energy density function. Mostly, we look up strain energy density functions in a book. Material scientists have been developing them for many years so that they mimic the behaviour of realistic materials. For this assignment you will use the well established, [Neo-Hookean](https://en.wikipedia.org/wiki/Neo-Hookean_solid) (its better than Hooke's Law because its new) strain energy density for compressible materials. This model approximates the behaviour of rubber-like materials. **Use the first compressible formulation listed, but remove the the $ln J$**. 
+Like the kinetic energy, we will begin by defining the potential energy on an infinitesimal chunk of the simulated object as $\psi\left(F\left(\mathbf{X}\right)\right)dV$ where $\psi$ is called the *strain energy density function. Mostly, we look up strain energy density functions in a book. Material scientists have been developing them for many years so that they mimic the behaviour of realistic materials. For this assignment you will use the well established, [Neo-Hookean](https://en.wikipedia.org/wiki/Neo-Hookean_solid) (its better than Hooke's Law because its new) strain energy density for compressible materials. This model approximates the behaviour of rubber-like materials. There are many formulations on that page, and we'll use the following:
+
+$$\psi(F) = C(J^{-2/3} \text{tr}({F^T F}) - 3) + D(J - 1)^2$$
+
+where $J = \det(F)$.
 
 The total potential of the tetrahedron can be defined via integration as 
 
@@ -238,7 +242,7 @@ The initial step is to divide the object to be simulated into a collection of te
 
 $$ \mathbf{q} = \begin{bmatrix} \mathbf{x^t}_0 \\ \mathbf{x^t}_1 \\ \mathbf{x^t}_2 \\ \vdots \\\mathbf{x^t}_n \end{bmatrix} $$ 
 
-where $n$ is the number of vertices in the mesh. We use selection matrices (as we did in [assignment 2](https://github.com/dilevin/CSC2549-a2-mass-spring-3d)) which yield identical assembly operations for the global forces, stiffness and mass matrix. 
+where $n$ is the number of vertices in the mesh. We use selection matrices (as we did in [assignment 2](https://github.com/dilevin/CSC417-a2-mass-spring-3d)) which yield identical assembly operations for the global forces, stiffness and mass matrix. 
 
 ## Time integration
 Because you can compute all the necessasry algebraic operators ($M$, $K$, $\mathbf{f}$) you can use your linearly-implict Euler code from assignment 2 to integrate your FEM system. To see the limitations of this approach, run `a3-finite-elements-3d arma` and press `N`. Interacting with the armadillo will almost immediately cause your simulation to explode. This is because our bunny was secretly gigantic! So its effective stiffness was very low. This armadillo is much smaller (less than 1 meter tall). Even though it uses the same material parameters, its effective stiffness is much higher. Linearly-implicit Euler just cannot handle it, and so ... Kaboom! 
