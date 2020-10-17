@@ -9,12 +9,16 @@ void d2V_linear_tetrahedron_dq2(Eigen::Matrix1212d &H, Eigen::Ref<const Eigen::V
 
    auto neohookean_linear_tet = [&](Eigen::Matrix1212d &dV, Eigen::Ref<const Eigen::VectorXd>q, Eigen::Ref<const Eigen::RowVectorXi> element, Eigen::Ref<const Eigen::Vector3d> X) {
         
+      //Code to compute non-integrated hessian matrix goes here
+     
     };
 
+    //integrate the non-integrated hessian across the tetrahedral element
     quadrature_single_point(H, q, element, volume, neohookean_linear_tet);  
     
 
-     // hard coded for tet, need to change size for hex
+    //DO NOT REMOVE THIS CODE This code ensures that the hessian matrix is symmetric postive definite by projecting all
+    //negative eigenvalues to small, postive values.
     Eigen::SelfAdjointEigenSolver<Eigen::Matrix1212d> es(H);
     
     Eigen::MatrixXd DiagEval = es.eigenvalues().real().asDiagonal();
