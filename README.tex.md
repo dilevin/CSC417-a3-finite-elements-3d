@@ -1,10 +1,10 @@
 ## Introduction
 
- The third assignment will introduce you to the most common numerical method for simulating, well, almost anything in Computer Graphics, the mighty Finite Element Method.  
+The third assignment will introduce you to the most common numerical method for simulating, well, almost anything in Computer Graphics, the mighty Finite Element Method.  
 
 ### Prerequisite installation
 
-On all platforms, we will assume you have installed cmake and a modern c++
+On all the platforms, we will assume you have installed cmake and a modern c++
 compiler on Mac OS X[¹](#¹macusers), Linux[²](#²linuxusers), or
 Windows[³](#³windowsusers).
 
