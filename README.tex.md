@@ -1,6 +1,6 @@
 ## Introduction
 
-The third assignment will introduce you to the most common numerical method for simulating, well, almost anything in Computer Graphics, the mighty Finite Element Method.  
+ The third assignment will introduce you to the most common numerical method for simulating, well, almost anything in Computer Graphics, the mighty Finite Element Method.  
 
 ### Prerequisite installation
 
