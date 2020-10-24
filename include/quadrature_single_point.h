@@ -5,7 +5,7 @@
 //  q - generalized coordinates of the FEM system
 //  element - vertex indices for the tetrahedron
 // volume - volume of the tetrahedron
-// integrand(out, q) - function to be integrated, returns value in out.
+// integrand(out, q, X) - function to be integrated, returns value in out.
 //Output:
 //  integrated - the value of the integrated function
 template<typename Ret, typename Integrand_Func>
